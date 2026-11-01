@@ -1,7 +1,18 @@
 #ifndef _NTS_H_
 #define _NTS_H_
 
-// Library to convert a numbers to the sting
+/*
+LIBRARY TO CONVERT NUMBER TO STRING
+
+Features:
+* exclude '%' operator during conversion
+* convert fake float (uint16_t/int16_t)
+* functions with fixed quantity of digits
+* returned errors can be collected in stack:
+    * err |= NTS_Conv...
+    * err |= NTS_Conv...
+    * if(err) printf("err: %d", err);
+*/
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -10,12 +21,11 @@
 extern "C" {
 #endif
 
-
 /*-------------------DEFINES-----------------*/
-//Use uint32/int32 convert functions
+// Use uint32/int32 convert functions
 #define NTS_USE_32BIT_FUNC
 
-//MACROS
+// MACROS
 /*
 #define NTS_WRITE(str, ind, symb)                                              \
     do {                                                                       \
@@ -37,13 +47,13 @@ extern "C" {
             return NTS_ERR_PTR;                                                \
         }                                                                      \
     } while (0)
-    
+
 /*------------------TYPES---------------------*/
 typedef enum {
-    NTS_OK = 0,  // good
-    NTS_ERR_PTR, // empty pointer
-    NTS_ERR_OW,   // output sting cell is not empty
-    NTS_ERR_IP   // invalid parameter
+    NTS_OK = 0,        // good
+    NTS_ERR_PTR = 0b1, // empty pointer
+    NTS_ERR_OW = 0b01, // output sting cell is not empty
+    NTS_ERR_IP = 0b001 // invalid parameter
 } nts_t;
 
 typedef uint8_t nts_str_t;
@@ -60,6 +70,9 @@ nts_t NTS_ConvU32(uint32_t num, nts_str_t *str);
 
 nts_t NTS_ConvFakeFloatI(int16_t num, uint8_t fract, nts_str_t *str);
 nts_t NTS_ConvFakeFloatU(uint16_t num, uint8_t fract, nts_str_t *str);
+
+// Fixed amount of digits. Right alignment
+nts_t NTS_ConvFixI8(int8_t num, uint8_t num_qty, nts_str_t *str);
 
 #ifdef __cplusplus
 }

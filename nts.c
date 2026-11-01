@@ -31,7 +31,7 @@ nts_t NTS_ConvI8(int8_t num, nts_str_t *str) {
         u_num -= (div_buf)*nts_div_mask[i];  // remove pow
         // digit start point or the last x^0
         if (div_buf > 0 || i == 0) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
         if (start_flag) {
             // write minus just before the first digit
@@ -61,7 +61,7 @@ nts_t NTS_ConvU8(uint8_t num, nts_str_t *str) {
         num -= (div_buf)*nts_div_mask[i];  // remove pow
         // digit start point or the last x^0
         if (div_buf > 0 || i == 0) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
         if (start_flag) {
             *str++ = div_buf + '0';
@@ -96,7 +96,7 @@ nts_t NTS_ConvI16(int16_t num, nts_str_t *str) {
         u_num -= (div_buf)*nts_div_mask[i];  // remove pow
         // digit start point or the last x^0
         if (div_buf > 0 || i == 0) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
         if (start_flag) {
             // write minus just before the first digit
@@ -126,7 +126,7 @@ nts_t NTS_ConvU16(uint16_t num, nts_str_t *str) {
         num -= (div_buf)*nts_div_mask[i];  // remove pow
         // digit start point or the last x^0
         if (div_buf > 0 || i == 0) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
         if (start_flag) {
             *str++ = div_buf + '0';
@@ -162,7 +162,7 @@ nts_t NTS_ConvI32(int32_t num, nts_str_t *str) {
         u_num -= (div_buf)*nts_div_mask_32bit[i];  // remove pow
         // digit start point or the last x^0
         if (div_buf > 0 || i == 0) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
         if (start_flag) {
             // write minus just before the first digit
@@ -195,7 +195,7 @@ nts_t NTS_ConvU32(uint32_t num, nts_str_t *str) {
         num -= (div_buf)*nts_div_mask_32bit[i];  // remove pow
         // digit start point or the last x^0
         if (div_buf > 0 || i == 0) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
         if (start_flag) {
             *str++ = div_buf + '0';
@@ -234,11 +234,12 @@ nts_t NTS_ConvFakeFloatI(int16_t num, uint8_t fract, nts_str_t *str) {
     for (int8_t i = 4; i >= 0; i--) {
         div_buf = (u_num / nts_div_mask[i]);
         u_num -= div_buf * nts_div_mask[i];
+        // if number starts or index before comma
         if (div_buf > 0 || i == (int8_t)fract) {
-            start_flag = 1;
+            start_flag = 1; // start printing
         }
-        if(start_flag){
-            if(minus_flag){
+        if (start_flag) {
+            if (minus_flag) {
                 *str++ = '-';
                 minus_flag = 0;
             }
@@ -265,10 +266,33 @@ nts_t NTS_ConvFakeFloatU(uint16_t num, uint8_t fract, nts_str_t *str) {
         return NTS_ERR_IP;
     }
     uint16_t div_buf;      ///< buffer to hold digit for division
-    uint16_t u_num;        ///< int to uint conversion
     uint8_t dig_index = 0; ///< string index
     bool start_flag = 0;   ///< first digit flag
-    bool minus_flag = 0;   ///< minus flag
+
+    for (int8_t i = 4; i >= 0; i--) {
+        div_buf = (num / nts_div_mask[i]);
+        num -= div_buf * nts_div_mask[i];
+        // if number starts or index before comma
+        if (div_buf > 0 || i == (int8_t)fract) {
+            start_flag = 1; // start printing
+        }
+        if (start_flag) {
+            *str++ = div_buf + '0';
+        }
+        if (i == (int8_t)fract) {
+            *str++ = '.'; // comma at designed place
+        }
+    }
+    str[dig_index++] = '\0'; 
+    return NTS_OK;
+}
+
+nts_t NTS_ConvFixI8(int8_t num, uint8_t num_qty, nts_str_t *str) {
+    NTS_CHECK_PTR(str);
+    uint8_t u_num;       ///< int to uint conversion
+    uint16_t div_buf;    ///< buffer to hold digit for division
+    bool start_flag = 0; ///< first digit flag
+    bool minus_flag = 0; ///< minus flag
 
     if (num < 0) {
         u_num = -num;
@@ -277,79 +301,25 @@ nts_t NTS_ConvFakeFloatU(uint16_t num, uint8_t fract, nts_str_t *str) {
         u_num = num;
     }
 
-    for (int8_t i = 4; i >= 0; i--) {
-        div_buf = (u_num / nts_div_mask[i]);
-        u_num -= div_buf * nts_div_mask[i];
-        if (div_buf > 0 || i == (int8_t)fract) {
+    for (int8_t i = (int8_t)num_qty; i >= 0; i--) {
+        div_buf = (u_num / nts_div_mask[i]); // extract pow
+        u_num -= (div_buf)*nts_div_mask[i];  // remove pow
+        // digit start point or the last x^0
+        if (div_buf > 0 || i == 0) {
             start_flag = 1;
+        } else {
+            *str++ = ' ';
+            continue;
         }
-        if(start_flag){
-            if(minus_flag){
+        if (start_flag) {
+            // write minus just before the first digit
+            if (minus_flag) {
                 *str++ = '-';
                 minus_flag = 0;
             }
             *str++ = div_buf + '0';
         }
-        if (i == (int8_t)fract) {
-            *str++ = '.';
-        }
     }
-    str[dig_index++] = '\0';
+    *str++ = '\0';
     return NTS_OK;
 }
-
-/*void MGL_PrintFloatTiny_L(uint16_t fake_f, uint8_t symb_quant,
-                          uint8_t symb_aft_comma, mgl_buf_type *r) {
-  if (symb_quant < 3 || symb_quant > 6 || symb_aft_comma > 4 ||
-      (symb_quant - symb_aft_comma - 1) < 1) {
-    MGL_SetErr(&mgl_err_var, MGL_ERR_SYMB_QUANT_OOR);
-    return;
-  }
-
-  if (r == 0 && r->PrintFuncPtr == 0) {
-    MGL_SetErr(&mgl_err_var, MGL_ERR_FUNC_PTR_NULL);
-    return;
-  }
-
-  char str[7] = {
-      0xAA, 0xAA, 0xAA,
-      0xAA, 0xAA, 0xAA}; // create array for PrintStr, quantity of numbers+"\0"
-  char *str_ptr;
-  uint16_t div_buf; // buffer to hold digit for division
-  uint16_t div_mask[] = {1, 10, 100, 1000,
-                         10000}; ///< for not to use POW function
-  uint8_t dig_index = 0;
-
-  for (int8_t i = 4; i >= 0; i--) {
-    div_buf =
-        (fake_f / div_mask[i]); ///< extract one by one digits from input var
-    fake_f -= (div_buf)*div_mask[i]; ///< remove pow in num
-    str[dig_index++] = div_buf + '0';
-    if (symb_aft_comma == i) {
-      str[dig_index++] = '.';
-    }
-  }
-  str[dig_index++] = '\0'; // add the end of the string to finish printing in a
-                           // PrintStr function
-
-#ifdef MGL_PRINT_FAKE_F_L_WITHOUT_NULLS
-  uint8_t clear_flag = 1; ///< stop clear zeros flag
-  // lest put this good zero before . and clear zeros before number in string
-  for (uint8_t i = 0; i < 6; i++) {
-    if (str[i] > '0' || str[i] == '.') {
-      clear_flag = 0;
-    }
-    if (clear_flag) {
-      str[i] = ' ';
-      if (str[i + 1] == '.') {
-        str[i] = '0';
-      }
-    }
-  }
-#endif
-
-  str_ptr = str + (6 - symb_quant);
-
-  r->PrintFuncPtr(str_ptr, r); // flush it to a display
-} */
-// nts_t NTS_ConvFakeFloatU(uint16_t num, char *str);
