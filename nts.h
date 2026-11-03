@@ -59,6 +59,7 @@ typedef enum {
 typedef uint8_t nts_str_t;
 
 /*------------------FUNCTIONS------------------*/
+// string length depends of the number of digits. Left alignment
 nts_t NTS_ConvI8(int8_t num, nts_str_t *str);
 nts_t NTS_ConvU8(uint8_t num, nts_str_t *str);
 
@@ -72,7 +73,19 @@ nts_t NTS_ConvFakeFloatI(int16_t num, uint8_t fract, nts_str_t *str);
 nts_t NTS_ConvFakeFloatU(uint16_t num, uint8_t fract, nts_str_t *str);
 
 // Fixed amount of digits. Right alignment
-nts_t NTS_ConvFixI8(int8_t num, uint8_t num_qty, nts_str_t *str);
+nts_t NTS_ConvFixI8(int8_t num, uint8_t symb_qty, nts_str_t *str);
+nts_t NTS_ConvFixU8(uint8_t num, uint8_t symb_qty, nts_str_t *str);
+
+nts_t NTS_ConvFixI16(int16_t num, uint8_t symb_qty, nts_str_t *str);
+nts_t NTS_ConvFixU16(uint16_t num, uint8_t symb_qty, nts_str_t *str);
+
+nts_t NTS_ConvFixI32(int32_t num, uint8_t symb_qty, nts_str_t *str);
+nts_t NTS_ConvFixU32(uint32_t num, uint8_t symb_qty, nts_str_t *str);
+
+nts_t NTS_ConvFixFakeFloatI(int16_t num, uint8_t symb_qty, uint8_t fract,
+                            nts_str_t *str);
+nts_t NTS_ConvFixFakeFloatU(uint16_t num, uint8_t symb_qty, uint8_t fract,
+                            nts_str_t *str);
 
 #ifdef __cplusplus
 }
