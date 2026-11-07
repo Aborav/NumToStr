@@ -217,7 +217,7 @@ nts_t NTS_ConvFakeFloatI(int16_t num, uint8_t fract, nts_str_t *str) {
     NTS_CHECK_PTR(str);
 
     if (fract > 4 || fract < 1) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
     uint8_t div_buf;     ///< buffer to hold digit for division
     uint16_t u_num;      ///< int to uint conversion
@@ -263,7 +263,7 @@ nts_t NTS_ConvFakeFloatU(uint16_t num, uint8_t fract, nts_str_t *str) {
     NTS_CHECK_PTR(str);
 
     if (fract > 4 || fract < 1) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
     uint8_t div_buf;     ///< buffer to hold digit for division
     bool start_flag = 0; ///< first digit flag
@@ -296,7 +296,7 @@ nts_t NTS_ConvFakeFloatU(uint16_t num, uint8_t fract, nts_str_t *str) {
 nts_t NTS_ConvFixI8(int8_t num, uint8_t symb_qty, nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 2 || symb_qty > 4) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
 
     uint8_t u_num;       ///< int to uint conversion
@@ -317,7 +317,7 @@ nts_t NTS_ConvFixI8(int8_t num, uint8_t symb_qty, nts_str_t *str) {
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         u_num -= (div_buf)*nts_div_mask[i]; // remove degree
         // digit start point or the last x^0
@@ -350,7 +350,7 @@ nts_t NTS_ConvFixI8(int8_t num, uint8_t symb_qty, nts_str_t *str) {
 nts_t NTS_ConvFixU8(uint8_t num, uint8_t symb_qty, nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 1 || symb_qty > 3) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
 
     uint8_t div_buf;     ///< buffer to hold digit for division
@@ -361,7 +361,7 @@ nts_t NTS_ConvFixU8(uint8_t num, uint8_t symb_qty, nts_str_t *str) {
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         num -= (div_buf)*nts_div_mask[i]; // remove degree
         // digit start point or the last x^0
@@ -389,7 +389,7 @@ nts_t NTS_ConvFixU8(uint8_t num, uint8_t symb_qty, nts_str_t *str) {
 nts_t NTS_ConvFixI16(int16_t num, uint8_t symb_qty, nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 2 || symb_qty > 6) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
 
     uint16_t u_num;      ///< int to uint conversion
@@ -410,7 +410,7 @@ nts_t NTS_ConvFixI16(int16_t num, uint8_t symb_qty, nts_str_t *str) {
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         u_num -= (div_buf)*nts_div_mask[i]; // remove degree
         // digit start point or the last x^0
@@ -443,7 +443,7 @@ nts_t NTS_ConvFixI16(int16_t num, uint8_t symb_qty, nts_str_t *str) {
 nts_t NTS_ConvFixU16(uint16_t num, uint8_t symb_qty, nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 1 || symb_qty > 5) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
 
     uint8_t div_buf;     ///< buffer to hold digit for division
@@ -454,7 +454,7 @@ nts_t NTS_ConvFixU16(uint16_t num, uint8_t symb_qty, nts_str_t *str) {
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         num -= (div_buf)*nts_div_mask[i]; // remove degree
         // digit start point or the last x^0
@@ -471,7 +471,7 @@ nts_t NTS_ConvFixU16(uint16_t num, uint8_t symb_qty, nts_str_t *str) {
     *str++ = '\0';
     return NTS_OK;
 }
-
+#ifdef NTS_USE_32BIT_FUNC
 /**
  * @brief Function to convert int32_t to the string
  * with fixed quantity of digits. Right alignment
@@ -482,7 +482,7 @@ nts_t NTS_ConvFixU16(uint16_t num, uint8_t symb_qty, nts_str_t *str) {
 nts_t NTS_ConvFixI32(int32_t num, uint8_t symb_qty, nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 2 || symb_qty > 11) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
 
     uint32_t u_num;      ///< int to uint conversion
@@ -503,7 +503,7 @@ nts_t NTS_ConvFixI32(int32_t num, uint8_t symb_qty, nts_str_t *str) {
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         u_num -= (div_buf)*nts_div_mask_32bit[i]; // remove degree
         // digit start point or the last x^0
@@ -525,7 +525,8 @@ nts_t NTS_ConvFixI32(int32_t num, uint8_t symb_qty, nts_str_t *str) {
     *str++ = '\0';
     return NTS_OK;
 }
-
+#endif
+#ifdef NTS_USE_32BIT_FUNC
 /**
  * @brief Function to convert uint32_t to the string
  * with fixed quantity of digits. Right alignment
@@ -536,7 +537,7 @@ nts_t NTS_ConvFixI32(int32_t num, uint8_t symb_qty, nts_str_t *str) {
 nts_t NTS_ConvFixU32(uint32_t num, uint8_t symb_qty, nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 1 || symb_qty > 10) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
 
     uint8_t div_buf;     ///< buffer to hold digit for division
@@ -547,7 +548,7 @@ nts_t NTS_ConvFixU32(uint32_t num, uint8_t symb_qty, nts_str_t *str) {
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         num -= (div_buf)*nts_div_mask_32bit[i]; // remove degree
         // digit start point or the last x^0
@@ -564,7 +565,7 @@ nts_t NTS_ConvFixU32(uint32_t num, uint8_t symb_qty, nts_str_t *str) {
     *str++ = '\0';
     return NTS_OK;
 }
-
+#endif
 /**
  * @brief Function to convert fake float (int16_t) to the string
  * with fixed quantity of digits. Right alignment
@@ -577,7 +578,7 @@ nts_t NTS_ConvFixFakeFloatI(int16_t num, uint8_t symb_qty, uint8_t fract,
                             nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 4 || symb_qty > 7) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
     uint8_t div_buf;     ///< buffer to hold digit for division
     uint16_t u_num;      ///< int to uint conversion
@@ -593,14 +594,14 @@ nts_t NTS_ConvFixFakeFloatI(int16_t num, uint8_t symb_qty, uint8_t fract,
         u_num = num;
     }
     if (fract > symb_qty - 1 || fract < 1) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
     for (int8_t i = (int8_t)(symb_qty - 1); i >= 0; i--) {
         div_buf = (u_num / nts_div_mask[i]);
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         u_num -= div_buf * nts_div_mask[i];
         // if number starts or index before comma
@@ -637,10 +638,10 @@ nts_t NTS_ConvFixFakeFloatU(uint16_t num, uint8_t symb_qty, uint8_t fract,
                             nts_str_t *str) {
     NTS_CHECK_PTR(str);
     if (symb_qty < 3 || symb_qty > 6) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
     if (fract > symb_qty - 1 || fract < 1) {
-        return NTS_ERR_IP;
+        return NTS_ERR_INPAR;
     }
     uint8_t div_buf;     ///< buffer to hold digit for division
     bool start_flag = 0; ///< first digit flag
@@ -652,7 +653,7 @@ nts_t NTS_ConvFixFakeFloatU(uint16_t num, uint8_t symb_qty, uint8_t fract,
         // if symb_qty is smaller than max degree of a number
         // num = 255, symb_qty = 2, 255/10^2 -> 25
         if (div_buf > 9) {
-            return NTS_ERR_IP;
+            return NTS_ERR_INPAR;
         }
         num -= div_buf * nts_div_mask[i];
         // if number starts or index before comma

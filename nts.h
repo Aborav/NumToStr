@@ -5,10 +5,10 @@
 LIBRARY TO CONVERT NUMBER TO STRING
 
 Features:
-* exclude '%' operator during conversion
+* excluded '%' operator during conversion
 * convert fake float (uint16_t/int16_t)
 * functions with fixed quantity of digits
-* returned errors can be collected in stack:
+* returned errors can be collected in a stack:
     * err |= NTS_Conv...
     * err |= NTS_Conv...
     * if(err) printf("err: %d", err);
@@ -26,16 +26,6 @@ extern "C" {
 #define NTS_USE_32BIT_FUNC
 
 // MACROS
-/*
-#define NTS_WRITE(str, ind, symb)                                              \
-    do {                                                                       \
-        if ((str)[ind] == 0) {                                                 \
-            (str)[(ind)++] = symb;                                             \
-        } else {                                                               \
-            return NTS_ERR_OW;                                                 \
-        }                                                                      \
-    } while (0)
-*/
 #define NTS_WRITE(str, ind, symb)                                              \
     do {                                                                       \
         (str)[(ind)++] = symb;                                                 \
@@ -52,8 +42,7 @@ extern "C" {
 typedef enum {
     NTS_OK = 0,        // good
     NTS_ERR_PTR = 0b1, // empty pointer
-    NTS_ERR_OW = 0b01, // output sting cell is not empty
-    NTS_ERR_IP = 0b001 // invalid parameter
+    NTS_ERR_INPAR = 0b01 // invalid parameter
 } nts_t;
 
 typedef uint8_t nts_str_t;
