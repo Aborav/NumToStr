@@ -42,7 +42,7 @@ extern "C" {
 typedef enum {
     NTS_OK = 0,        // good
     NTS_ERR_PTR = 0b1, // empty pointer
-    NTS_ERR_INPAR = 0b01 // invalid parameter
+    NTS_ERR_INPAR = 0b10 // invalid parameter
 } nts_t;
 
 typedef uint8_t nts_str_t;
